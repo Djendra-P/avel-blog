@@ -45,25 +45,14 @@ class CategoryController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Category $model)
     {
-        //
+        return response()->json($model->find($id), 200);
     }
 
     /**
@@ -73,9 +62,18 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $model)
     {
-        //
+        Validator::make($request->all(), [
+            'id'    => 'required',
+            'title' => 'required',
+        ])->validate();
+
+        $model->find($request->id)->update([
+            'title' => $request->title,
+            'slug'  => Str::slug($request->title),
+        ]);
+        return redirect()->back()->with('success', 'Data berhasil di ubah');
     }
 
     /**
@@ -84,8 +82,9 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete($id, Category $model)
     {
-        //
+        $model->find($id)->delete();
+        return redirect()->back()->with('success', 'Data berhasil di hapus');
     }
 }

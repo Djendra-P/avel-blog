@@ -26,5 +26,9 @@ Route::group(['prefix' => 'author'], function () {
 
 
     Route::get('/category', 'CategoryController@index');
+    Route::get('/category/{id}/edit', 'CategoryController@edit');
+    Route::get('/category/{id}/delete', 'CategoryController@delete');
+
     Route::post('/store-category', 'CategoryController@store')->name('storeCategory');
+    Route::post('/update-category', 'CategoryController@update')->name('updateCategory');
 });
