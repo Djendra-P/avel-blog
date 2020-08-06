@@ -13,17 +13,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/', 'IndexController@index')->name('index');
 
 Auth::routes([
     'register' => false,
     'forgot-password' => false
 ]);
-Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['prefix' => 'author'], function () {
+
+Route::group(['prefix' => 'author', 'middleware' => 'auth'], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+
+    /* Article Route */
     Route::group(['prefix' => 'article'], function () {
         Route::get('/', 'ArticleController@index');
         Route::get('/{id}/edit', 'ArticleController@edit');
@@ -33,6 +38,7 @@ Route::group(['prefix' => 'author'], function () {
         Route::post('/update', 'ArticleController@update')->name('updateArticle');
     });
 
+    /* Category Route */
     Route::group(['prefix' => 'category'], function () {
         Route::get('/', 'CategoryController@index');
         Route::get('/{id}/edit', 'CategoryController@edit');
