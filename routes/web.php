@@ -17,11 +17,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes([
+    'register' => false,
+    'forgot-password' => false
+]);
+Route::get('/home', 'HomeController@index')->name('home');
 
 Route::group(['prefix' => 'author'], function () {
-    Route::get('/home', 'HomeController@index')->name('home');
-
     Route::group(['prefix' => 'article'], function () {
         Route::get('/', 'ArticleController@index');
         Route::get('/{id}/edit', 'ArticleController@edit');
@@ -39,5 +41,4 @@ Route::group(['prefix' => 'author'], function () {
         Route::post('/store', 'CategoryController@store')->name('storeCategory');
         Route::post('/update', 'CategoryController@update')->name('updateCategory');
     });
-
 });

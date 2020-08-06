@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
+use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Validator;
+use Str;
 
 class ArticleController extends Controller
 {
@@ -13,19 +18,13 @@ class ArticleController extends Controller
      */
     public function index()
     {
+        $categories = Category::all();
+        $articles = Article::paginate(2);
         return view('author.article', [
-            'page_title' => 'Articles'
+            'page_title' => 'Articles',
+            'categories' => $categories,
+            'articles' => $articles
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -34,20 +33,34 @@ class ArticleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Article $model)
     {
-        dd($request->all());
-    }
+        // dd($request->all());
+        /**
+         * Validation
+         */
+        Validator::make($request->all(), [
+            'title'         => 'required',
+            'category_id'   => 'required',
+            'excerpt'       => 'required',
+            'body'          => 'required',
+        ])->validate();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        /**
+         * Function Create
+         */
+        $model->create([
+            'author_id'     => Auth::user()->id,
+            'category_id'   => $request->category_id,
+            'title'         => $request->title,
+            'slug'          => Str::slug($request->title),
+            'excerpt'       => $request->excerpt,
+            'body'          => $request->body,
+            'is_publish'    => $request->is_publish,
+        ]);
+
+        return redirect()->back()->with('success', 'Data berhasil disimpan');
+
     }
 
     /**
@@ -56,9 +69,9 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Article $model)
     {
-        //
+        return response()->json($model->find($id), 200);
     }
 
     /**
@@ -68,9 +81,27 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Article $model)
     {
-        //
+        // dd($request->all());
+        Validator::make($request->all(), [
+            'title'         => 'required',
+            'category_id'   => 'required',
+            'excerpt'       => 'required',
+            'body'          => 'required',
+        ])->validate();
+
+        $model->find($request->id)->update([
+            'author_id'     => Auth::user()->id,
+            'category_id'   => $request->category_id,
+            'title'         => $request->title,
+            'slug'          => Str::slug($request->title),
+            'excerpt'       => $request->excerpt,
+            'body'          => $request->body,
+            'is_publish'    => $request->is_publish,
+        ]);
+
+        return redirect()->back()->with('success', 'Data berhasil di update');
     }
 
     /**
@@ -79,8 +110,9 @@ class ArticleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete($id, Article $model)
     {
-        //
+        $model->find($id)->delete();
+        return redirect()->url('author/article')->with('success', 'Data berhasil di hapus');
     }
 }

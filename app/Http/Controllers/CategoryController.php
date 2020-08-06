@@ -85,6 +85,6 @@ class CategoryController extends Controller
     public function delete($id, Category $model)
     {
         $model->find($id)->delete();
-        return redirect()->back()->with('success', 'Data berhasil di hapus');
+        return redirect()->to('author/category')->with('success', 'Data berhasil di hapus');
     }
 }

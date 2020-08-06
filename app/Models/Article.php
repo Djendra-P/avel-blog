@@ -8,6 +8,6 @@ class Article extends Model
 {
   protected $table = 'articles';
   protected $fillable = [
-    'title', 'slug', 'updated_at', 'created_at'
+    'author_id', 'category_id', 'title', 'slug', 'excerpt', 'body', 'is_publish', 'updated_at', 'created_at'
   ];
 }
