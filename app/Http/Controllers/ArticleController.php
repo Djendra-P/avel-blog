@@ -13,7 +13,9 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return view('author.article');
+        return view('author.article', [
+            'page_title' => 'Articles'
+        ]);
     }
 
     /**
@@ -34,7 +36,7 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
