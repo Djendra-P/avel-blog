@@ -36,6 +36,10 @@ class CategoryController extends Controller
             'title' => 'required',
         ])->validate();
 
+        if (Article::where('slug', '=', Str::slug($request->title))->exists()) {
+            return redirect()->back()->with('error', "Title '$request->title' sudah ada");
+        }
+
         $model->create([
             'title' => $request->title,
             'slug'  => Str::slug($request->title),
@@ -68,6 +72,10 @@ class CategoryController extends Controller
             'id'    => 'required',
             'title' => 'required',
         ])->validate();
+
+        if (Article::where('slug', '=', Str::slug($request->title))->exists()) {
+            return redirect()->back()->with('error', "Title '$request->title' sudah ada");
+        }
 
         $model->find($request->id)->update([
             'title' => $request->title,

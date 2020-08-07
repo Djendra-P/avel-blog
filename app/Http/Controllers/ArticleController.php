@@ -49,6 +49,10 @@ class ArticleController extends Controller
         /**
          * Function Create
          */
+        if (Article::where('slug', '=', Str::slug($request->title))->exists()) {
+            return redirect()->back()->with('error', "Title '$request->title' sudah ada");
+        }
+
         $model->create([
             'author_id'     => Auth::user()->id,
             'category_id'   => $request->category_id,
@@ -60,7 +64,6 @@ class ArticleController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Data berhasil disimpan');
-
     }
 
     /**
@@ -90,6 +93,10 @@ class ArticleController extends Controller
             'excerpt'       => 'required',
             'body'          => 'required',
         ])->validate();
+
+        if (Article::where('slug', '=', Str::slug($request->title))->exists()) {
+            return redirect()->back()->with('error', "Title '$request->title' sudah ada");
+        }
 
         $model->find($request->id)->update([
             'author_id'     => Auth::user()->id,
