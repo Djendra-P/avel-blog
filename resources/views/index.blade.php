@@ -69,25 +69,34 @@
         </div>
 
         <div class="jumbotron p-4 p-md-5 text-white rounded bg-info">
-            <div class="col-md-6 px-0">
+            <div class="col-md-12 px-0">
                 <h1 class="display-4 font-italic">{{$latest_articles->title}}</h1>
-                <p class="lead my-3">{{strip_tags($latest_articles->body)}}</p>
-                <p class="lead mb-0"><a href="{{url('article')}}/{{$latest_articles->slug}}"
-                        class="text-white font-weight-bold">Continue reading...</a></p>
+                <p class="lead my-3">{{\Illuminate\Support\Str::limit(strip_tags($latest_articles->body), 200)}}</p>
+                @if (\Illuminate\Support\Str::length(strip_tags($latest_articles->body)) > 50)
+                <a href="{{url('article')}}/{{$latest_articles->slug}}" class="text-white font-weight-bold">Continue
+                    reading...</a>
+                @endif
             </div>
         </div>
     </div>
 
     <main role="main" class="container">
         <div class="row">
+
             <div class="col-md-8 blog-main">
+
                 @foreach ($articles_index as $item)
                 <div class="blog-post">
-                <h2 class="blog-post-title">{{$item->title}}</h2>
-                <p class="blog-post-meta">{{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }} by <a href="#">{{ Auth::user()->name }}</a></p>
-                <p>
-                    {{ strip_tags($item->body)}}
-                </p>
+                    <h2 class="blog-post-title">{{$item->title}}</h2>
+                    <p class="blog-post-meta">{{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }} by <a
+                            href="#">{{ Auth::user()->name }}</a></p>
+                    <p>
+                        {{ \Illuminate\Support\Str::limit(strip_tags($item->body), 250)}}
+                        @if (\Illuminate\Support\Str::length(strip_tags($latest_articles->body)) > 50)
+                        <a href="{{url('article')}}/{{$latest_articles->slug}}">Continue
+                            reading...</a>
+                        @endif
+                    </p>
                 </div><!-- /.blog-post -->
                 @endforeach
 
@@ -96,7 +105,6 @@
                 </nav>
 
             </div><!-- /.blog-main -->
-
             <aside class="col-md-4 blog-sidebar">
                 <div class="p-4 mb-3 bg-light rounded">
                     <h4 class="font-italic">About</h4>

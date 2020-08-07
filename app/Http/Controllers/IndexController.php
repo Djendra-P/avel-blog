@@ -18,7 +18,7 @@ class IndexController extends Controller
     public function index()
     {
         $articles           = Article::all();
-        $articles_index     = Article::paginate(1);
+        $articles_index     = Article::paginate(3);
         $categories         = Category::all();
         $groupBy            = $articles->sortByDesc('created_at')->groupBy(function($date) {
             return Carbon::parse($date->created_at)->format('F Y');
