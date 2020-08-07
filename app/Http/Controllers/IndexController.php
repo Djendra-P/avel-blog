@@ -9,7 +9,6 @@ use Carbon\Carbon;
 
 class IndexController extends Controller
 {
-
     /**
      * Show the main view.
      *
@@ -20,11 +19,29 @@ class IndexController extends Controller
         $articles           = Article::all();
         $articles_index     = Article::paginate(3);
         $categories         = Category::all();
-        $groupBy            = $articles->sortByDesc('created_at')->groupBy(function($date) {
+        $groupBy            = $articles->sortByDesc('created_at')->groupBy(function ($date) {
             return Carbon::parse($date->created_at)->format('F Y');
         });
         // dd($groupBy);
         return view('index', [
+            'articles'              => $articles,
+            'categories'            => $categories,
+            'latest_articles'       => $articles->last(),
+            'groupBy'               => $groupBy,
+            'articles_index'        => $articles_index,
+        ]);
+    }
+
+    public function article($slug, Article $article)
+    {
+        $articles           = Article::all();
+        $articles_index     = Article::paginate(3);
+        $categories         = Category::all();
+        $groupBy            = $articles->sortByDesc('created_at')->groupBy(function ($date) {
+            return Carbon::parse($date->created_at)->format('Y');
+        });
+        return view('detail_article', [
+            'article' => $article->where('slug', $slug)->first(),
             'articles'              => $articles,
             'categories'            => $categories,
             'latest_articles'       => $articles->last(),

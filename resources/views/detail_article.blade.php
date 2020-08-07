@@ -85,23 +85,18 @@
 
             <div class="col-md-8 blog-main">
 
-                @foreach ($articles_index as $item)
                 <div class="blog-post">
-                    <h2 class="blog-post-title">{{$item->title}}</h2>
-                    <p class="blog-post-meta">{{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }} by <a
-                            href="#">{{ \App\User::find($item->author_id)->name }}</a></p>
+                    <h2 class="blog-post-title">{{$article->title}}</h2>
+                    <p class="blog-post-meta">{{ \Carbon\Carbon::parse($article->created_at)->format('d F Y') }} by <a
+                            href="#">{{ \App\User::find($article->author_id)->name }}</a></p>
                     <p>
-                        {{ \Illuminate\Support\Str::limit(strip_tags($item->body), 250)}}
-                        @if (\Illuminate\Support\Str::length(strip_tags($latest_articles->body)) > 50)
-                        <a href="{{url('article')}}/{{$item->slug}}">Continue
-                            reading...</a>
-                        @endif
+                        {{ strip_tags($article->body)}}
+
                     </p>
                 </div><!-- /.blog-post -->
-                @endforeach
 
                 <nav class="blog-pagination">
-                    {{ $articles_index->links() }}
+                    <a class="btn btn-outline-primary" href="/">Back to Home</a>
                 </nav>
 
             </div><!-- /.blog-main -->
